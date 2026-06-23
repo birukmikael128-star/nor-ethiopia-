@@ -64,9 +64,13 @@
         };
 
         function changeLang(lang) {
-            currentLang = lang;
-            const t = translations[lang];
-            
+                    // 1. HARDCODE YOUR KEYS HERE SO THE BROWSER CAN READ THEM INSTANTLY!
+        const SUPABASE_URL = "https://zdxjhxervybdtfjprvwu.supabase.co";
+        const SUPABASE_ANON_KEY = "PASTE_YOUR_LONG_ANON_PUBLIC_KEY_STRING_HERE"; 
+
+        // Initialize the live cloud database bridge client
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
             // Update labels text paths
             document.getElementById('app-title').innerText = t.title;
             document.getElementById('reg-title').innerText = t.reg;
