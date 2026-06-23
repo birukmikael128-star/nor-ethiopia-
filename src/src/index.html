@@ -1,38 +1,101 @@
-import React, { useState } from 'react';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nor Ethiopia BNPL</title>
+    <!-- Tailwind CSS CDN for instant styling -->
+    <script src="https://jsdelivr.net"></script>
+    <style>
+        body { font-family: sans-serif; background-color: #f9fafb; }
+    </style>
+</head>
+<body class="p-6 min-h-screen">
 
-export default function NorEthiopia() {
-  const [lang, setLang] = useState('en');
-  const [isReg, setIsReg] = useState(false);
-  const [name, setName] = useState('');
-  const [balance, setBalance] = useState(5000);
-
-  const text = {
-    en: { title: "Nor Ethiopia BNPL", reg: "Customer Registration", name: "Full Name", btn: "Apply for 5,000 ETB Limit", bal: "Available Balance" },
-    am: { title: "ኖር ኢትዮጵያ ቢኤንፒኤል", reg: "የደንበኛ መመዝገቢያ", name: "ሙሉ ስም", btn: "የ 5,000 ብር ገደብ ያመልክቱ", bal: "ያለው ቀሪ ሂሳብ" },
-    om: { title: "Noor Itoophiyaa BNPL", reg: "Maamila Galmeessuu", name: "Maqaa Guutuu", btn: "Daangaa Birrii 5,000 Gaafadhu", bal: "Haftee Qብሪ" }
-  }[lang];
-
-  return (
-    <div className="p-6 max-w-xl mx-auto font-sans bg-gray-50 min-h-screen rounded-xl shadow-lg">
-      <div className="flex justify-between items-center bg-emerald-700 p-4 text-white rounded-lg mb-6">
-        <h1 className="text-xl font-black">{text.title}</h1>
-        <div className="space-x-2 text-xs font-bold">
-          {['en', 'am', 'om'].map(l => <button key={l} onClick={() => setLang(l)} className={`px-2 py-1 rounded ${lang === l ? 'bg-white text-emerald-800' : 'text-emerald-100'}`}>{l.toUpperCase()}</button>)}
+    <div class="max-w-xl mx-auto bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+        <!-- Header banner with Language Controls -->
+        <div class="flex justify-between items-center bg-emerald-700 p-4 text-white rounded-lg mb-6">
+            <h1 id="app-title" class="text-xl font-black">Nor Ethiopia BNPL</h1>
+            <div class="space-x-1 text-xs font-bold">
+                <button onclick="changeLang('en')" id="btn-en" class="px-2 py-1 rounded bg-white text-emerald-800">EN</button>
+                <button onclick="changeLang('am')" id="btn-am" class="px-2 py-1 rounded text-emerald-100">AM</button>
+                <button onclick="changeLang('om')" id="btn-om" class="px-2 py-1 rounded text-emerald-100">OM</button>
+            </div>
         </div>
-      </div>
 
-      {!isReg ? (
-        <form onSubmit={(e) => { e.preventDefault(); setIsReg(true); }} className="bg-white p-6 rounded-lg space-y-4 shadow-sm">
-          <h2 className="font-bold border-b pb-2 text-emerald-800">{text.reg}</h2>
-          <input type="text" placeholder={text.name} required value={name} onChange={e => setName(e.target.value)} className="w-full p-2 border rounded" />
-          <button type="submit" className="w-full bg-emerald-600 text-white p-2 rounded font-bold">{text.btn}</button>
+        <!-- Section 1: Customer Onboarding Form -->
+        <form id="reg-form" onsubmit="handleRegister(event)" class="space-y-4">
+            <h2 id="reg-title" class="font-bold border-b pb-2 text-emerald-800 text-lg">Customer Registration</h2>
+            <div>
+                <label id="label-name" class="block text-xs font-bold text-gray-500 mb-1">Full Name</label>
+                <input type="text" id="input-name" required placeholder="e.g., Almaz Abera" class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+            <div>
+                <label id="label-phone" class="block text-xs font-bold text-gray-500 mb-1">Phone Number</label>
+                <input type="tel" required placeholder="09xxxxxxxx" class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+            <button type="submit" id="btn-submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white p-3 rounded-lg font-bold shadow transition">Apply for 5,000 ETB Limit</button>
         </form>
-      ) : (
-        <div className="bg-emerald-50 p-4 rounded-lg border border-emerald-200">
-          <p className="text-xs font-bold text-emerald-700 uppercase">Welcome {name}! {text.bal}</p>
-          <p className="text-3xl font-black text-gray-800">{balance.toLocaleString()} <span className="text-sm font-bold">ETB</span></p>
+
+        <!-- Section 2: Dashboard UI (Hidden by default until form submit) -->
+        <div id="dashboard" class="hidden space-y-6">
+            <div class="bg-emerald-50 p-4 rounded-lg border border-emerald-200">
+                <p id="welcome-msg" class="text-sm font-bold text-emerald-800 mb-1">Welcome!</p>
+                <p id="bal-title" class="text-xs font-bold text-emerald-600 uppercase tracking-wider">Available Balance</p>
+                <p class="text-3xl font-black text-gray-800">5,000 <span class="text-sm font-bold text-emerald-700">ETB</span></p>
+            </div>
+            <div class="p-4 bg-gray-50 border rounded-lg flex justify-between items-center shadow-sm">
+                <div>
+                    <p class="font-bold text-gray-800">1,500 ETB</p>
+                    <p class="text-xs text-amber-600 font-bold">Term: 48 Hours</p>
+                </div>
+                <button onclick="alert('Payment simulated successfully via telebirr!')" id="btn-pay" class="bg-sky-500 hover:bg-sky-600 text-white text-xs px-3 py-2 rounded-lg font-bold shadow">Pay with telebirr/CBE/Coopay</button>
+            </div>
         </div>
-      )}
     </div>
-  );
-}
+
+    <!-- Vanilla Javascript Logic to execute features flawlessly -->
+    <script>
+        let currentLang = 'en';
+        const translations = {
+            en: { title: "Nor Ethiopia BNPL", reg: "Customer Registration", name: "Full Name", phone: "Phone Number", btn: "Apply for 5,000 ETB Limit", bal: "Available Balance", welcome: "Welcome", pay: "Pay with telebirr/CBE/Coopay" },
+            am: { title: "ኖር ኢትዮጵያ ቢኤንፒኤል", reg: "የደንበኛ መመዝገቢያ", name: "ሙሉ ስም", phone: "የስልክ ቁጥር", btn: "የ 5,000 ብር ገደብ ያመልክቱ", bal: "ያለው ቀሪ ሂሳብ", welcome: "እንኳን ደህና መጡ", pay: "በtelebirr/CBE/Coopay ይክፈሉ" },
+            om: { title: "Noor Itoophiyaa BNPL", reg: "Maamila Galmeessuu", name: "Maqaa Guutuu", phone: "Lakk Bilbilaa", btn: "Daangaa Birrii 5,000 Gaafadhu", bal: "Haftee Qብሪ", welcome: "Akkam jirtu", pay: "telebirr/CBE/Coopay'n Kafali" }
+        };
+
+        function changeLang(lang) {
+            currentLang = lang;
+            const t = translations[lang];
+            
+            // Update labels text paths
+            document.getElementById('app-title').innerText = t.title;
+            document.getElementById('reg-title').innerText = t.reg;
+            document.getElementById('label-name').innerText = t.name;
+            document.getElementById('label-phone').innerText = t.phone;
+            document.getElementById('btn-submit').innerText = t.btn;
+            document.getElementById('bal-title').innerText = t.bal;
+            document.getElementById('btn-pay').innerText = t.pay;
+
+            // Toggle selected languages button highlight active states
+            ['en', 'am', 'om'].forEach(l => {
+                const btn = document.getElementById(`btn-${l}`);
+                if (l === lang) {
+                    btn.className = "px-2 py-1 rounded bg-white text-emerald-800 shadow font-bold";
+                } else {
+                    btn.className = "px-2 py-1 rounded text-emerald-100 hover:text-white font-bold";
+                }
+            });
+        }
+
+        function handleRegister(e) {
+            e.preventDefault();
+            const customerName = document.getElementById('input-name').value;
+            const t = translations[currentLang];
+            
+            document.getElementById('welcome-msg').innerText = `${t.welcome}, ${customerName}!`;
+            document.getElementById('reg-form').classList.add('hidden');
+            document.getElementById('dashboard').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
